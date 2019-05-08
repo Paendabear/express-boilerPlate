@@ -26,6 +26,7 @@ const options = {
 };
 
 app.use(morgan(morganOption));
+app.use(express.json());
 app.use(cors(options));
 
 app.use(helmet());
