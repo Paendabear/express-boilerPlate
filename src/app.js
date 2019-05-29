@@ -7,6 +7,8 @@ const morgan = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
 const { NODE_ENV } = require('./config');
+const errorHandler = require('./error-handler'); 
+const validateBearerToken = require('./validate-bearer-token');
 
 const app = express();
 
@@ -30,22 +32,14 @@ app.use(express.json());
 app.use(cors(options));
 
 app.use(helmet());
+app.use(validateBearerToken);
 
 app.get('/', (req, res) => {
   res.send('Hello, world!');
 });
 
 
-app.use(function errorHandler(error, req, res, next) {
-  let response;
-  if (NODE_ENV === 'production') {
-    response = { error: { message: 'server error' } };
-  } else {
-    console.error(error);
-    response = { message: error.message, error };
-  }
-  res.status(500).json(response);
-});
+app.use(errorHandler)
 
 
 module.exports = app;
